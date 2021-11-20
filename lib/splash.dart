@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stock_viewer/home.dart';
+import 'package:stock_viewer/sv_image.dart';
+import 'package:stock_viewer/theme.dart';
+import 'package:http/http.dart' as http;
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -15,23 +19,42 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    startTime();
+    prepareApp();
   }
 
-  Future startTime() async {
-    Duration d = const Duration(seconds: 2);
-    return Timer(d, navigateToHome);
-  }
-
-  void navigateToHome() {
+  Future prepareApp() async {
+    List<SVImage> images = await _loadInitialImages();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => const Home()));
+      context,
+      MaterialPageRoute(
+        builder: (_) => Home(
+          images: images,
+        ),
+      ),
+    );
+  }
+
+  Future<List<SVImage>> _loadInitialImages() async {
+    final response = await http.get(
+        Uri.parse('https://api.pexels.com/v1/curated?per_page=30'),
+        headers: {
+          'Authorization':
+              '563492ad6f91700001000001c697c64374c1414eb2212c446b888a23',
+        });
+
+    if (response.statusCode == 200) {
+      Iterable p = jsonDecode(response.body)['photos'];
+      return List.from(p.map((m) => SVImage.fromJson(m)));
+    } else {
+      print('Failed to load images');
+      return [];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Column(
         children: [
           Expanded(child: Container()),
@@ -48,25 +71,9 @@ class _SplashState extends State<Splash> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Stock',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 32,
-                      letterSpacing: 1.1,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
+                  Text('Stock', style: Theme.of(context).textTheme.headline1),
                   const SizedBox(height: 8),
-                  Text(
-                    'Viewer',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 32,
-                      letterSpacing: 1.1,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
+                  Text('Viewer', style: Theme.of(context).textTheme.headline1),
                 ],
               ),
             ),
@@ -86,7 +93,7 @@ class _SplashState extends State<Splash> {
                 fontSize: 16,
                 letterSpacing: 1.1,
                 fontWeight: FontWeight.w300,
-                color: Color(0xFFCCCCCC),
+                color: SVTheme.kWhite,
               )),
           const SizedBox(height: 32),
         ],

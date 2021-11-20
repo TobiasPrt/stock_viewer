@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stock_viewer/splash.dart';
+import 'package:stock_viewer/theme.dart';
 
 void main() => runApp(const StockViewer());
 
@@ -8,9 +9,10 @@ class StockViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: SVTheme().getTheme(),
       debugShowCheckedModeBanner: false,
-      home: Splash(),
+      home: const Splash(),
     );
   }
 }
