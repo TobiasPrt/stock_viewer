@@ -2,5 +2,5 @@ projectKey=tobiasprt:stockviewer
 serverUrl=http://localhost:9000
 serverVersion=9.1.0.47736
 dashboardUrl=http://localhost:9000/dashboard?id=tobiasprt%3Astockviewer
-ceTaskId=AX1CS3mCh2jaxD3a_d6L
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AX1CS3mCh2jaxD3a_d6L
+ceTaskId=AX1C1vU8h2jaxD3a_d6M
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AX1C1vU8h2jaxD3a_d6M
