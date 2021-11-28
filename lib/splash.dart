@@ -36,7 +36,7 @@ class _SplashState extends State<Splash> {
 
   Future<List<SVImage>> _loadInitialImages() async {
     final response = await http.get(
-        Uri.parse('https://api.pexels.com/v1/curated?per_page=30'),
+        Uri.parse('https://api.pexels.com/v1/curated?per_page=80'),
         headers: {
           'Authorization':
               '563492ad6f91700001000001c697c64374c1414eb2212c446b888a23',

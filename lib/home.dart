@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
       isLoading = true;
     });
     final response = await http.get(
-        Uri.parse('https://api.pexels.com/v1/search?query=$value&per_page=20'),
+        Uri.parse('https://api.pexels.com/v1/search?query=$value&per_page=80'),
         headers: {
           'Authorization':
               '563492ad6f91700001000001c697c64374c1414eb2212c446b888a23',
