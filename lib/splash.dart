@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:stock_viewer/core/themes/sv_theme.dart';
 import 'package:stock_viewer/home.dart';
 import 'package:stock_viewer/sv_image.dart';
-import 'package:stock_viewer/theme.dart';
-import 'package:http/http.dart' as http;
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -23,10 +23,10 @@ class _SplashState extends State<Splash> {
   }
 
   Future prepareApp() async {
-    List<SVImage> images = await _loadInitialImages();
-    Navigator.pushReplacement(
+    final images = await _loadInitialImages();
+    await Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
+      MaterialPageRoute<Home>(
         builder: (_) => Home(
           images: images,
         ),
@@ -43,10 +43,11 @@ class _SplashState extends State<Splash> {
         });
 
     if (response.statusCode == 200) {
-      Iterable p = jsonDecode(response.body)['photos'];
-      return List.from(p.map((m) => SVImage.fromJson(m)));
+      final p =
+          jsonDecode(response.body)['photos'] as List<Map<String, dynamic>>;
+      return List.from(p.map<SVImage>((m) => SVImage.fromJson(m)));
     } else {
-      print('Failed to load images');
+      debugPrint('Failed to load images');
       return [];
     }
   }

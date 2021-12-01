@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:stock_viewer/core/themes/sv_theme.dart';
+import 'package:stock_viewer/injection_container.dart' as di;
 import 'package:stock_viewer/splash.dart';
-import 'package:stock_viewer/theme.dart';
 
-void main() => runApp(const StockViewer());
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
+  await di.init();
+  runApp(const StockViewer());
+}
 
 class StockViewer extends StatelessWidget {
   const StockViewer({Key? key}) : super(key: key);

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stock_viewer/core/themes/sv_theme.dart';
 import 'package:stock_viewer/sv_image.dart';
-import 'package:stock_viewer/theme.dart';
 
 class Detail extends StatelessWidget {
+  const Detail({required this.image, required this.index, Key? key})
+      : super(key: key);
+
   final SVImage image;
   final int index;
-
-  const Detail({Key? key, required this.image, required this.index})
-      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class Detail extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -112,7 +112,7 @@ class Detail extends StatelessWidget {
               MaterialButton(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 minWidth: double.infinity,
-                color: Color(0xFFBD7D0D),
+                color: const Color(0xFFBD7D0D),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
                 onPressed: () => null,

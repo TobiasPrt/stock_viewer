@@ -1,18 +1,17 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:stock_viewer/core/themes/sv_theme.dart';
 import 'package:stock_viewer/detail.dart';
 import 'package:stock_viewer/sv_image.dart';
-import 'package:stock_viewer/theme.dart';
-import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
-  final List<SVImage> images;
+  const Home({required this.images, Key? key}) : super(key: key);
 
-  const Home({Key? key, required this.images}) : super(key: key);
+  final List<SVImage> images;
 
   @override
   _HomeState createState() => _HomeState();
@@ -40,13 +39,14 @@ class _HomeState extends State<Home> {
         });
 
     if (response.statusCode == 200) {
-      Iterable p = jsonDecode(response.body)['photos'];
+      final p =
+          jsonDecode(response.body)['photos'] as List<Map<String, dynamic>>;
       setState(() {
-        images = List.from(p.map((m) => SVImage.fromJson(m)));
+        images = List.from(p.map<SVImage>((m) => SVImage.fromJson(m)));
         isLoading = false;
       });
     } else {
-      print('Failed to load images');
+      debugPrint('Failed to load images');
     }
   }
 
@@ -143,22 +143,23 @@ class _HomeState extends State<Home> {
                   color: Colors.white,
                   backgroundColor: Colors.black,
                 )),
-          if (isLoading) SizedBox(height: 8),
+          if (isLoading) const SizedBox(height: 8),
           Expanded(
             child: StaggeredGridView.countBuilder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               crossAxisCount: 2,
               itemCount: images.length,
-              itemBuilder: (BuildContext context, int index) {
+              itemBuilder: (context, index) {
                 return Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: GestureDetector(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) =>
-                            Detail(index: index, image: images[index]))),
+                    onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<Detail>(
+                            builder: (_) =>
+                                Detail(index: index, image: images[index]))),
                     child: Hero(
                       tag: 'image$index',
                       child: Image.network(
@@ -169,7 +170,7 @@ class _HomeState extends State<Home> {
                   ),
                 );
               },
-              staggeredTileBuilder: (int index) => StaggeredTile.count(
+              staggeredTileBuilder: (index) => StaggeredTile.count(
                   1, images[index].height / images[index].width),
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
