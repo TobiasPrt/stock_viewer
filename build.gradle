@@ -1,0 +1,76 @@
+plugins {
+    // Used for retrieving variables from .env file
+    id "co.uzzu.dotenv.gradle" version "1.2.0"
+}
+
+// Analyze code regarding the linter rules
+task analyze(type: Exec) {
+    commandLine 'flutter', 'analyze'
+}
+
+// Run tests and create coverage report
+task test(type: Exec) {
+    commandLine 'flutter', 'test', '--coverage'
+}
+
+// Upload Coverage report to codecov
+task coverage(type: Exec) {
+    commandLine './codecov', '-t', env.CODECOV_TOKEN.value
+}
+
+// Change build number in pubscpec file
+task updateVersion() {
+    doLast{
+            // read current version from yaml file
+            def output = new ByteArrayOutputStream()
+            exec {
+                commandLine 'awk', '/version/{print $NF}', 'pubspec.yaml'
+                standardOutput = output
+            }
+            output = output.toString().trim()
+
+            // extract the current version and update it
+            Integer patchVersion = output.split('\\+').first().split('\\.').last().toInteger()
+            patchVersion = patchVersion + 1
+
+            // extract the current build number and update it
+            Integer buildno = output.split('\\+').last().toInteger()
+            buildno = buildno + 1
+
+            // Combine patch and buildno to new line in file
+            String version = output.split('\\+').first().split('\\.')[0..-2].join('.') + '.' + patchVersion.toString() + '+' + buildno.toString()
+            
+            // replace version in yaml file
+            exec {
+                commandLine 'sed', '-i', '', 's/' + output + '/' + version + '/g', 'pubspec.yaml'
+            }
+
+            // print result
+            println 'Version was updated from ' + output + ' to ' + version
+    }
+}
+
+
+task build_ios(type: Exec) {
+    dependsOn 'analyze'
+    dependsOn 'test'
+    dependsOn 'coverage'
+
+    commandLine 'flutter', 'build', 'ios'
+}
+
+task build_android(type: Exec) {
+    dependsOn 'analyze'
+    dependsOn 'test'
+    dependsOn 'coverage'
+
+    commandLine 'flutter', 'build', 'apk'
+}
+
+task build() {
+    dependsOn 'updateVersion'
+    dependsOn 'build_ios'
+    // dependsOn 'build_android'
+
+    println 'Builds are done'
+}
