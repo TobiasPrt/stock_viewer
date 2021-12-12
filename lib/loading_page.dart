@@ -1,55 +1,31 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:stock_viewer/core/themes/sv_theme.dart';
-import 'package:stock_viewer/home.dart';
-import 'package:stock_viewer/sv_image.dart';
+import 'package:stock_viewer/features/image/presentation/pages/image_list_page.dart';
+import 'package:stock_viewer/features/image/presentation/stores/image_store.dart';
 
-class Splash extends StatefulWidget {
-  const Splash({Key? key}) : super(key: key);
+class LoadingPage extends StatefulWidget {
+  const LoadingPage({Key? key}) : super(key: key);
 
   @override
-  State<Splash> createState() => _SplashState();
+  State<LoadingPage> createState() => _LoadingPageState();
 }
 
-class _SplashState extends State<Splash> {
+class _LoadingPageState extends State<LoadingPage> {
   @override
-  void initState() {
-    super.initState();
-    prepareApp();
-  }
-
-  Future prepareApp() async {
-    final images = await _loadInitialImages();
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute<Home>(
-        builder: (_) => Home(
-          images: images,
-        ),
-      ),
-    );
-  }
-
-  Future<List<SVImage>> _loadInitialImages() async {
-    final response = await http.get(
-        Uri.parse('https://api.pexels.com/v1/curated?per_page=80'),
-        headers: {
-          'Authorization':
-              '563492ad6f91700001000001c697c64374c1414eb2212c446b888a23',
-        });
-
-    if (response.statusCode == 200) {
-      final p =
-          jsonDecode(response.body)['photos'] as List<Map<String, dynamic>>;
-      return List.from(p.map<SVImage>((m) => SVImage.fromJson(m)));
-    } else {
-      debugPrint('Failed to load images');
-      return [];
-    }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final _imageStore = Provider.of<ImageStore>(context)..loadSuggestedImages();
+    when(
+        (_) => _imageStore.loadingState == LoadingState.loaded,
+        () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute<ImageListPage>(
+                builder: (_) => const ImageListPage(),
+              ),
+            ));
   }
 
   @override

@@ -2,7 +2,7 @@ import 'package:stock_viewer/features/image/data/datasources/image_data_source.d
 import 'package:stock_viewer/features/image/domain/entities/sv_image.dart';
 import 'package:stock_viewer/features/image/domain/repositories/image_repository.dart';
 
-class ImageRepositoryImpl implements ImageRespository {
+class ImageRepositoryImpl implements ImageRepository {
   ImageRepositoryImpl({required this.imageRemoteDataSource});
 
   final ImageRemoteDataSource imageRemoteDataSource;

@@ -24,26 +24,27 @@ class ImageRemoteDataSourceImpl implements ImageRemoteDataSource {
 
   @override
   Future<List<SVImageModel>> getSearchedImages(String searchterm) =>
-      _getImagesFromUrl(
-          'https://api.pexels.com/v1/search?query=$searchterm&per_page=80');
+      _getImagesFromUrl('/v1/search',
+          <String, dynamic>{'query': searchterm, 'per_page': '80'});
 
   @override
   Future<List<SVImageModel>> getSuggestedImages() =>
-      _getImagesFromUrl('https://api.pexels.com/v1/curated?per_page=80');
+      _getImagesFromUrl('/v1/curated', <String, dynamic>{'per_page': '80'});
 
-  Future<List<SVImageModel>> _getImagesFromUrl(String url) async {
+  Future<List<SVImageModel>> _getImagesFromUrl(
+      String endpoint, Map<String, dynamic> args) async {
     final response = await client.get(
-      Uri.dataFromString(url),
+      Uri.https('api.pexels.com', endpoint, args),
       headers: {
         'Authorization': dotenv.env['PEXELS_API_KEY']!,
       },
     );
 
     if (response.statusCode == 200) {
-      final photoDataList =
-          jsonDecode(response.body)['photos'] as List<Map<String, dynamic>>;
+      final photoDataList = jsonDecode(response.body)['photos'] as List;
       return photoDataList
-          .map<SVImageModel>((photoData) => SVImageModel.fromJson(photoData))
+          .map((dynamic photoData) =>
+              SVImageModel.fromJson(photoData as Map<String, dynamic>))
           .toList();
     } else {
       throw ServerException();

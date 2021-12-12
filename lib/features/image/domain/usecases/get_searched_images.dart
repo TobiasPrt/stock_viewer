@@ -1,24 +1,24 @@
 import 'package:equatable/equatable.dart';
-import 'package:stock_viewer/core/usecase/usecase.dart';
+import 'package:stock_viewer/core/usecases/usecase.dart';
 import 'package:stock_viewer/features/image/domain/entities/sv_image.dart';
 import 'package:stock_viewer/features/image/domain/repositories/image_repository.dart';
 
 class GetSearchedImages implements UseCase<List<SVImage>, Params> {
-  GetSearchedImages(this.imageRespository);
+  GetSearchedImages(this.imageRepository);
 
-  final ImageRespository imageRespository;
+  final ImageRepository imageRepository;
 
   @override
   Future<List<SVImage>> call(Params params) async {
-    return imageRespository.getSearchedImages(params.searchterm);
+    return imageRepository.getSearchedImages(params.searchTerm);
   }
 }
 
 class Params extends Equatable {
-  const Params({required this.searchterm});
+  const Params({required this.searchTerm});
 
-  final String searchterm;
+  final String searchTerm;
 
   @override
-  List<Object?> get props => [searchterm];
+  List<Object?> get props => [searchTerm];
 }
