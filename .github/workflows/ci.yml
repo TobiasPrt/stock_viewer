@@ -10,6 +10,7 @@ env:
   java_version: "12.x"
   flutter_version: "2.5.3"
   codecov_token: ${{ secrets.CODECOV_TOKEN }}
+  pexels_api_key: ${{ secrets.PEXELS_API_KEY }}
 
 
 jobs:
@@ -29,6 +30,8 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: ${{ env.flutter_version }}
+      - name: Create environment file
+        run: echo 'PEXELS_API_KEY=${{ env.pexels_api_key }}' > .env
       - name: Install dependencies
         run: flutter pub get
       - name: Run Flutter lint
@@ -58,6 +61,8 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: ${{ env.flutter_version }}
+      - name: Create environment file
+        run: echo 'PEXELS_API_KEY=${{ env.pexels_api_key }}' > .env
       - name: Install dependencies
         run: flutter pub get
       - name: Build
@@ -80,6 +85,8 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           flutter-version: ${{ env.flutter_version }}
+      - name: Create environment file
+        run: echo 'PEXELS_API_KEY=${{ env.pexels_api_key }}' > .env
       - name: Install dependencies
         run: flutter pub get
       - name: Build
