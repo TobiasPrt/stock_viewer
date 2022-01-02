@@ -23,8 +23,8 @@ void main() {
     tSearchTerm = 'bear';
     tSearchedImages = [
       SVImage(
-          width: 1,
-          height: 1,
+          width: 10,
+          height: 10,
           photographer: 'Bear',
           url: 'https://bear.com',
           imageUrl: 'https://bear.com/image')
